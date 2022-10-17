@@ -1,6 +1,12 @@
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from models import User
+
 
 app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+db = SQLAlchemy(app)
 
 
 next_id = 4
@@ -36,8 +42,8 @@ def add_clanek(name):
 @app.route('/', methods = ['POST', 'GET'])
 def index():  # put application's code here
     if request.method == "POST":
-        request.form["login"]
-        request.form["heslo"]
+        login = request.form["login"]
+        heslo = request.form["heslo"]
     return render_template('index.html')
 
 
