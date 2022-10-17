@@ -33,9 +33,12 @@ def add_clanek(name):
     next_id += 1
 
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+@app.route('/', methods = ['POST', 'GET'])
+def index():  # put application's code here
+    if request.method == "POST":
+        request.form["login"]
+        request.form["heslo"]
+    return render_template('index.html')
 
 
 @app.route('/clanky', methods = ['POST', 'GET'])
