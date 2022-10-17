@@ -1,0 +1,8 @@
+cv3
+1. úvodní stránka, tam bude html formulář
+2. login bude email (html5 featurky)
+3. heslo bude heslo (html5)
+4. napojte se databázi (relační, Postgres, SQLite3)
+5. a uložte pomocí knihovny SQL Alchemy registrovaného do databáze
+6. session
+7. ORM

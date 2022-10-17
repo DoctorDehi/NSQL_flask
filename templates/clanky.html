@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Články</title>
+</head>
+<body>
+
+<h1>Seznam článků</h1>
+<section>
+    {% for clanek in clanky %}
+        <p><a href="{{ url_for('clanek', clanekID=clanek['id']) }}">{{ clanek["nazev"] }}</a></p>
+    {% endfor %}
+</section>
+
+<section>
+    <h3>Přidat článek</h3>
+    <form action="{{ url_for('clanky_all') }}" method="POST">
+        <input type="text" placeholder="Název článku" name="nazev_clanku">
+        <input type="submit" value="Odeslat">
+    </form>
+</section>
+
+</body>
+</html>
