@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta charset="UTF-8">
     <title>Sign in</title>
-
-    <form>
-        <input type="email">
-        <input type="password">
-    </form>
 </head>
 <body>
+    <form>
+        <!Prihlasovaci formular>
+        <label for="email_input">Email: </label>
+        <input type="email" id="email_input" name="login">
+        <label for="pswd_input">Heslo:</label>
+        <input type="password" id="pswd_input" name="heslo">
 
+        <!Checkbox zapamatovani si>
+        <label>
+            <input type="checkbox" name="remember" id="rmbr_button">
+            Pamatovat si přihlašovací údaje na tomto počítači
+        </label>
+
+        <!Meme checkbox>
+        <label>
+            <input type="checkbox" name="susenky" id="susky_button">
+            Souhlasím s používáním invazivních sušenek v tomto prohlížeči
+        </label>
+
+        <!Tlacitko na odeslani udaju>
+        <!TODO:>
+
+        <!Tlacitko "zapomnel jsem heslo">
+        <!TODO:>
+
+    </form>
 </body>
 </html>
+
+<!PROKOPE VRAT SE NA TUHLE STRANKU: https://designmodo.com/create-css3-login-form/>
