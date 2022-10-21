@@ -2,10 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-app = Flask(__name__)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,11 +10,15 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
 
 
-with app.app_context():
-    db.create_all()
+if __name__ == "__main__":
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+    db = SQLAlchemy(app)
+    with app.app_context():
+        db.create_all()
 
-    #db.session.add(User(login="example2bjbj3", password="sadsd"))
-    #db.session.commit()
+        db.session.add(User(login="test@test.cz", password="test"))
+        db.session.commit()
 
-    users = db.session.execute(db.select(User)).scalars()
-    print(users)
+        users = db.session.execute(db.select(User)).scalars()
+        print(users)

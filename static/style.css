@@ -1,0 +1,16 @@
+form.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+div.login-form {
+    max-width: 30em;
+    margin: auto auto;
+    padding: 2em;
+}
+
+.login-form span {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

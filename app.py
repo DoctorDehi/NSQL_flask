@@ -1,12 +1,6 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from models import User
-
-
-app = Flask(__name__)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
-db = SQLAlchemy(app)
+from models import db, User
 
 
 next_id = 4
@@ -28,6 +22,11 @@ clanky_dicts = [
     },
 ]
 
+app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
+db.init_app(app)
+
 
 def add_clanek(name):
     global next_id
@@ -41,10 +40,21 @@ def add_clanek(name):
 
 @app.route('/', methods = ['POST', 'GET'])
 def index():  # put application's code here
+    failed = False
     if request.method == "POST":
-        login = request.form["login"]
+        login= request.form["login"].strip()
         heslo = request.form["heslo"]
-    return render_template('index.html')
+        user = db.session.execute(db.select(User).filter_by(login=login)).scalars().first()
+        if not user:
+            failed = True
+        else:
+            if user.password == heslo:
+                failed = False
+
+            else:
+                failed = True
+
+    return render_template('index.html', failed=failed)
 
 
 @app.route('/clanky', methods = ['POST', 'GET'])
