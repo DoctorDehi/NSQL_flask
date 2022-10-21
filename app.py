@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User
 
@@ -49,7 +49,7 @@ def index():  # put application's code here
             failed = True
         else:
             if user.password == heslo:
-                failed = False
+                return redirect('/clanky')
 
             else:
                 failed = True

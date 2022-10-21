@@ -12,7 +12,11 @@ div.login-form {
 .login-form span {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+}
+
+input.login-form {
+    vertical-align: middle;
+    margin-right: 0.5em;
 }
 
 body {
