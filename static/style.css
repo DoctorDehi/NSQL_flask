@@ -14,3 +14,7 @@ div.login-form {
     flex-direction: row;
     justify-content: space-between;
 }
+
+body {
+    background-image: url('https://img.myloview.cz/fototapety/dve-krasne-kohoutky-na-bilem-pozadi-700-74795182.jpg');
+}
