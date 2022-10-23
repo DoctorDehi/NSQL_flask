@@ -6,3 +6,8 @@ cv3
 5. a uložte pomocí knihovny SQL Alchemy registrovaného do databáze
 6. session
 7. ORM
+
+
+# test user
+login: test@test.cz
+password: test
