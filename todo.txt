@@ -11,3 +11,16 @@ cv3
 # test user
 login: test@test.cz
 password: test
+
+
+1. stáhnout redis z dockerhubu
+2. přihlásit se do redisu
+
+A. namigrovat redis image do flasku
+
+B1. omezit frontu požadavků
+B2. po nějaké době požadavky mizí
+
+
+docker redis tutotial
+bitnami/redis
