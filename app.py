@@ -1,27 +1,15 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+import os
+import redis
+import time
+import json
+
+from flask import Flask, request, redirect, session, g as app_ctx
+from flask import render_template,  url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User
-from chatbot import bot
+from models import db, User, Fakulta, Katedra
+#from chatbot import bot
+from clanky_dict import *
 
-
-next_id = 4
-clanky_dicts = [
-    {
-    "id": 1,
-    "nazev": "Bla",
-    "text": "lorem ipsum"
-    },
-    {
-        "id": 2,
-        "nazev": "Blabla",
-        "text": "lorem ipsum"
-    },
-    {
-        "id": 3,
-        "nazev": "Dlspdfú",
-        "text": "lorem ipsum"
-    },
-]
 
 app = Flask(__name__)
 
@@ -29,6 +17,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
 app.config["SECRET_KEY"] = "C02FFVUEe58qbZ2MPqoSax3ej8PsOyQq4npyXgWEU8D6AmRzvcMHFjGklPDQHD58g1VRbrcbBSGx6MU6fZzj6dc3eXgm7bJD"
 db.init_app(app)
 
+
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+redis_conn = redis.from_url(redis_url)
 
 def add_clanek(name):
     global next_id
@@ -39,6 +30,21 @@ def add_clanek(name):
     })
     next_id += 1
 
+
+@app.before_request
+def logging_before():
+    # Store the start time for the request
+    app_ctx.start_time = time.perf_counter()
+
+
+@app.after_request
+def logging_after(response):
+    # Get total time in milliseconds
+    total_time = time.perf_counter() - app_ctx.start_time
+    time_in_ms = int(total_time * 1000)
+    # Log the time taken for the endpoint
+    print('%s ms %s %s' % (time_in_ms, request.method, request.path))
+    return response
 
 @app.route('/', methods = ['POST', 'GET'])
 def index():  # put application's code here
@@ -75,6 +81,27 @@ def clanky_all():
 @app.route('/clanky/<int:clanekID>')
 def clanek(clanekID):
     return 'ID clanku %d' % clanekID
+
+@app.route('/katedry')
+def katedry():
+    katedry = db.session.execute(db.select(Katedra)).scalars()
+    return render_template("katedry.html", katedry=katedry)
+
+@app.route('/katedra/<int:katedraID>')
+def katedra(katedraID):
+    key = "katedra%i" %katedraID
+    redis_result = redis_conn.get(key)
+    if redis_result:
+        data = json.loads(redis_result)
+    else:
+        katedra = db.session.execute(db.select(Katedra).filter_by(id=katedraID)).scalars().first()
+        fakulta = db.session.execute(db.select(Fakulta).filter_by(id=katedra.fakulta)).scalars().first()
+        data = {"katedra": katedra.name,
+                "fakulta": fakulta.name
+        }
+        redis_conn.set(key, json.dumps(data))
+        redis_conn.expire(key, 60)
+    return render_template("katedra.html", katedra=data["katedra"], fakulta=data["fakulta"])
 
 
 if __name__ == '__main__':
