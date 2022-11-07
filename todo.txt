@@ -1,3 +1,15 @@
+
+cv6
+1. stáhnout docker image z docker hubu pro MongoDB
+(přidat do vašeho projektu do docker-compose yaml souboru)
+
+2. Nainstalovat pipem pymongo
+(https://pymongo.readthedocs.io/en/stable/)
+
+3. Provést komunikaci přes pymongo s mongoDB
+(https://www.tutorialspoint.com/mongodb/index.htm)
+
+
 cv3
 1. úvodní stránka, tam bude html formulář
 2. login bude email (html5 featurky)
@@ -13,6 +25,7 @@ login: test@test.cz
 password: test
 
 
+cv4
 1. stáhnout redis z dockerhubu
 2. přihlásit se do redisu
 

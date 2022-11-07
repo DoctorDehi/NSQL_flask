@@ -1,5 +1,6 @@
 import os
 import redis
+from pymongo import MongoClient
 import time
 import json
 
@@ -18,8 +19,13 @@ app.config["SECRET_KEY"] = "C02FFVUEe58qbZ2MPqoSax3ej8PsOyQq4npyXgWEU8D6AmRzvcMH
 db.init_app(app)
 
 
-redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:50001')
 redis_conn = redis.from_url(redis_url)
+
+mongo_client = MongoClient('mongodb://localhost:50002')
+db = mongo_client.test_database
+posts = db.posts
+#posts.insert_many(clanky_dicts)
 
 def add_clanek(name):
     global next_id
@@ -102,6 +108,15 @@ def katedra(katedraID):
         redis_conn.set(key, json.dumps(data))
         redis_conn.expire(key, 60)
     return render_template("katedra.html", katedra=data["katedra"], fakulta=data["fakulta"])
+
+@app.route("/posts-mongo/")
+def posts_mongo():
+    collection = db['posts']
+    cursor = collection.find({})
+    posts = []
+    for document in cursor:
+        posts.append(document)
+    return render_template("clanky.html", clanky=posts)
 
 
 if __name__ == '__main__':

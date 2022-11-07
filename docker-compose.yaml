@@ -1,0 +1,13 @@
+version: "3.0"
+services:
+  redis:
+    image: redis
+    ports:
+      - "50001:6379"
+
+  mongo:
+    image: mongo
+    ports:
+      - "50002:27017"
+
+
