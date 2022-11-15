@@ -1,15 +1,12 @@
 import os
 import redis
-from pymongo import MongoClient
 import time
 import json
 
 from flask import Flask, request, redirect, session, g as app_ctx
 from flask import render_template,  url_for, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from models import db, User, Fakulta, Katedra
 from mongo_models import mongo_db, Clanek
-from clanky_dict import *
 
 
 app = Flask(__name__)
@@ -46,8 +43,14 @@ def logging_after(response):
     print('%s ms %s %s' % (time_in_ms, request.method, request.path))
     return response
 
-@app.route('/', methods = ['POST', 'GET'])
-def index():  # put application's code here
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/login', methods = ['POST', 'GET'])
+def login():  # put application's code here
     failed = False
     if request.method == "POST":
         login = request.form["login"].strip()
@@ -59,18 +62,20 @@ def index():  # put application's code here
             if user.password == heslo:
                 session.permanent = True
                 session["user"] = login
-                return redirect('/clanky')
+                return redirect('/')
 
             else:
                 failed = True
 
-    return render_template('index.html', failed=failed)
+    return render_template('login.html', failed=failed)
+
 
 @app.route('/logout')
 def logout():
     if "user" in session:
         session.pop("user", None)
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
+
 
 @app.route('/clanky')
 def clanky_all():
@@ -82,6 +87,7 @@ def clanky_all():
 def katedry():
     katedry = db.session.execute(db.select(Katedra)).scalars()
     return render_template("katedry.html", katedry=katedry)
+
 
 @app.route('/katedra/<int:katedraID>')
 def katedra(katedraID):
@@ -98,7 +104,6 @@ def katedra(katedraID):
         redis_conn.set(key, json.dumps(data))
         redis_conn.expire(key, 60)
     return render_template("katedra.html", katedra=data["katedra"], fakulta=data["fakulta"])
-
 
 
 if __name__ == '__main__':
