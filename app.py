@@ -8,7 +8,7 @@ from flask import Flask, request, redirect, session, g as app_ctx
 from flask import render_template,  url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, Fakulta, Katedra
-#from chatbot import bot
+from mongo_models import mongo_db, Clanek
 from clanky_dict import *
 
 
@@ -22,19 +22,13 @@ db.init_app(app)
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:50001')
 redis_conn = redis.from_url(redis_url)
 
-mongo_client = MongoClient('mongodb://localhost:50002')
-mongo_db = mongo_client.test_database
-posts = mongo_db.posts
-#posts.insert_many(clanky_dicts)
 
-def add_clanek(name):
-    global next_id
-    clanky_dicts.append({
-        "id": next_id,
-        "nazev": name,
-        "text": ""
-    })
-    next_id += 1
+app.config['MONGODB_SETTINGS'] = {
+        'db': 'novinky',
+        'host': 'localhost',
+        'port': 50002
+}
+mongo_db.init_app(app)
 
 
 @app.before_request
@@ -78,15 +72,11 @@ def logout():
         session.pop("user", None)
     return redirect(url_for("index"))
 
-@app.route('/clanky', methods = ['POST', 'GET'])
+@app.route('/clanky')
 def clanky_all():
-    if request.method == "POST":
-        add_clanek(request.form["nazev_clanku"])
-    return render_template('clanky.html', clanky=clanky_dicts)
+    clanky = Clanek.objects
+    return render_template('clanky_list.html', clanky=clanky)
 
-@app.route('/clanky/<int:clanekID>')
-def clanek(clanekID):
-    return 'ID clanku %d' % clanekID
 
 @app.route('/katedry')
 def katedry():
@@ -109,14 +99,6 @@ def katedra(katedraID):
         redis_conn.expire(key, 60)
     return render_template("katedra.html", katedra=data["katedra"], fakulta=data["fakulta"])
 
-@app.route("/posts-mongo/")
-def posts_mongo():
-    collection = mongo_db['posts']
-    cursor = collection.find({})
-    posts = []
-    for document in cursor:
-        posts.append(document)
-    return render_template("clanky.html", clanky=posts)
 
 
 if __name__ == '__main__':
