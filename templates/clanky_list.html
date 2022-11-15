@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
@@ -15,14 +11,10 @@
     {% for clanek in clanky %}
         <h3><a href="{{clanek.url}}">{{ clanek.nadpis }}</a></h3>
         <p>Autor: {{ clanek.autor }}</p>
+        <p>Klíčová slova: {{ clanek.klicova_slova }}</p>
         <br>
     {% endfor %}
 </section>
-
-</body>
-</html></title>
-</head>
-<body>
 
 </body>
 </html>

@@ -104,7 +104,3 @@ def katedra(katedraID):
         redis_conn.set(key, json.dumps(data))
         redis_conn.expire(key, 60)
     return render_template("katedra.html", katedra=data["katedra"], fakulta=data["fakulta"])
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
