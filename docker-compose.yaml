@@ -1,4 +1,8 @@
 version: "3.0"
+
+volumes:
+  testdb:
+
 services:
   redis:
     image: redis
@@ -9,5 +13,19 @@ services:
     image: mongo
     ports:
       - "50002:27017"
+
+  neo4j:
+      image: neo4j:latest
+      env_file:
+        - '.env'
+        - '.testenv'
+      ports:
+        - '7475:7474'
+        - '7688:7687'
+      volumes:
+        - 'testdb:/data'
+
+
+
 
 

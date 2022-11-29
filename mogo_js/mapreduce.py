@@ -7,7 +7,7 @@ db = connection.obama
 
 
 # db.texts.remove()
-with open("obama.txt", "r") as f:
+with open("../mongo/obama.txt", "r") as f:
     lines = f.readlines()
 
 [db.texts.insert({"text": line}) for line in lines]
